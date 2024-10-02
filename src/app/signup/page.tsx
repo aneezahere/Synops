@@ -47,7 +47,7 @@ export default function SignUpPage() {
       setError("Passwords don't match")
       return
     }
-    const { result, error } = await signUp(email, password)
+    const {  error } = await signUp(email, password)
     if (error) {
       setError(error.message)
     } else {

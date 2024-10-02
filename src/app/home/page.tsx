@@ -35,8 +35,9 @@ export default function HomePage() {
       } else {
         throw new Error(data.error || 'An error occurred');
       }
-    } catch (error) {
-      setError('An error occurred while summarizing the text.');
+    } catch (error) { // Ensure error can be of any type
+      const errorMessage = (error as Error)?.message || 'An error occurred while summarizing the text.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

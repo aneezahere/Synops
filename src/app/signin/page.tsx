@@ -1,62 +1,76 @@
-'use client'
-import React, { useState, useEffect } from 'react'
-import { Inter, Orbitron } from 'next/font/google'
-import Link from 'next/link'
-import styles from './signin.module.css'
-import { signIn, signInWithGoogle } from '../lib/auth'  // Import Google sign-in function
-import { useRouter } from 'next/navigation'
+'use client';
+import React, { useState, useEffect } from 'react';
+import { Inter, Orbitron } from 'next/font/google';
+import Link from 'next/link';
+import styles from './signin.module.css';
+import { signIn, signInWithGoogle } from '../lib/auth';  // Import Google sign-in function
+import { useRouter } from 'next/navigation';
 
-const inter = Inter({ subsets: ['latin'] })
-const orbitron = Orbitron({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
+const orbitron = Orbitron({ subsets: ['latin'] });
 
 export default function SignInPage() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [isHovered, setIsHovered] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const router = useRouter()
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const handleMouseMove = (e: MouseEvent) => {
-        setMousePosition({ x: e.clientX, y: e.clientY })
-      }
-      window.addEventListener('mousemove', handleMouseMove)
-      return () => window.removeEventListener('mousemove', handleMouseMove)
+        setMousePosition({ x: e.clientX, y: e.clientY });
+      };
+      window.addEventListener('mousemove', handleMouseMove);
+      return () => window.removeEventListener('mousemove', handleMouseMove);
     }
-  }, [])
+  }, []);
 
   const calculateRotation = () => {
     if (typeof window !== 'undefined') {
-      const centerX = window.innerWidth / 2
-      const centerY = window.innerHeight / 2
-      const rotateX = (mousePosition.y - centerY) / 50
-      const rotateY = (mousePosition.x - centerX) / 50
-      return `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const rotateX = (mousePosition.y - centerY) / 50;
+      const rotateY = (mousePosition.x - centerX) / 50;
+      return `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     }
-    return ''
-  }
+    return '';
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    const { result, error } = await signIn(email, password)
-    if (error) {
-      setError(error.message)
-    } else {
-      router.push('/home') // Redirect to home page after successful sign in
+    e.preventDefault();
+    setError('');
+    try {
+      const { error } = await signIn(email, password);
+      if (error) {
+        throw new Error(error.message || 'An error occurred during sign in');
+      }
+      router.push('/home'); // Redirect to home page after successful sign in
+    } catch (error: unknown) {
+      // Check if error is an instance of Error
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred.');
+      }
     }
-  }
+  };
 
   const handleGoogleSignIn = async () => {
-    const { result, error } = await signInWithGoogle();  // Google sign-in logic
-    if (error) {
-      setError(error.message);
-    } else {
-      router.push('/home');  // Redirect to home page after successful Google sign-in
+    setError('');
+    try {
+      await signInWithGoogle(); // Google sign-in logic
+      router.push('/home'); // Redirect to home page after successful Google sign-in
+    } catch (error: unknown) {
+      // Check if error is an instance of Error
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('An unknown error occurred during Google sign-in.');
+      }
     }
-  }
+  };
 
   return (
     <div className={styles.container}>
@@ -107,9 +121,9 @@ export default function SignInPage() {
           Sign in with Google
         </button>
         <p className={`${styles.text} ${inter.className}`}>
-          Don't have an account? <Link href="/signup" className={styles.link}>Sign Up</Link>
+          Don&apos;t have an account? <Link href="/signup" className={styles.link}>Sign Up</Link>
         </p>
       </div>
     </div>
-  )
+  );
 }
