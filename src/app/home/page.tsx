@@ -6,7 +6,7 @@ import styles from './home.module.css';
 import { Link2 } from 'lucide-react';
 
 const inter = Inter({ subsets: ['latin'] });
-const orbitron = Orbitron({ subsets: ['latin'] });
+
 
 export default function HomePage() {
   const [inputText, setInputText] = useState('');
