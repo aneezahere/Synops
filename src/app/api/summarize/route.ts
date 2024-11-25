@@ -12,8 +12,7 @@ function chunkText(text: string, chunkSize: number): string[] {
     startIndex += chunkSize;
   }
 
-  return chunks;
-}
+  
 
 export async function POST(request: Request) {
   console.log('Received request in /api/summarize');
