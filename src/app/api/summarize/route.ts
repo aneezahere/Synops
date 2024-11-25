@@ -17,7 +17,7 @@ function chunkText(text: string, chunkSize: number): string[] {
 export async function POST(request: Request) {
   console.log('Received request in /api/summarize');
 
-  try {
+ 
     const { text } = await request.json();
     console.log('Received text:', text.substring(0, 100) + '...');
 
